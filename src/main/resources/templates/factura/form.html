@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head th:replace="layout/layout :: head">
+<meta charset="UTF-8">
+<title>Nueva Factura</title>
+</head>
+<body>
+	<header th:replace="layout/layout :: header"></header>
+	<div class="container py-4">
+		<div class="card bg-ligth">
+			<div style="color:white;" class="card-header bg-primary" th:text="${titulo}"></div>
+			<div class="card-body bg-light">
+				<a  th:text="'&laquo regresar'" th:href="@{/ver/}+${factura.client.id}" class="btn btn-light btn-sm my-2"></a>
+				
+				<form th:action="@{/factura/form}" th:object="${factura}"
+					method="post">
+					<div class="form-group row">
+						<label class="col-sm-2">Cliente:</label>
+						<div class="col">
+							<input class="form-control" disabled
+								th:value="${factura.client.nombre} + ' '+${factura.client.apellido}">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2">Descripción:</label>
+						<div class="col">
+							<input type="text" th:field="*{description}" class="form-control">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2">Observación:</label>
+						<div class="col">
+							<textarea th:field="*{observation}" class="form-control"></textarea>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="buscar_producto" class="col-sm-2">Buscar Producto:</label>
+						<div class="col">
+							<input type="text" name="buscar_producto" id="buscar_producto" class="form-control">
+						</div>
+					</div>
+					<div class="form-group">
+						<input type="submit" th:value="${titulo}"
+							class="btn btn-success">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<footer th:replace="layout/layout :: footer"></footer>
+	<script th:replace="/factura/automplete-productos :: autocomplete-js"></script>
+</body>
+</html>
