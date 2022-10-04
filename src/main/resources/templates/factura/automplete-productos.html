@@ -20,18 +20,70 @@
       				return {
       					value: item.id,
       					label:item.name,
-      					precio: item.precio,
+      					precio: item.price,
       				}
       			}));
       		},
       	});
       },
       select: function(event, ui){
-      	$("#buscar_producto").val(ui.item.label);
+      	//$("#buscar_producto").val(ui.item.label);
+      	
+      	var linea = $("#plantillaItemsFactura").html();
+      	
+      	linea = linea.replace(/{ID}/g,ui.item.value);
+      	linea = linea.replace(/{NOMBRE}/g,ui.item.label);
+      	linea = linea.replace(/{PRECIO}/g,ui.item.precio);
+    	
+    	//var cantidad = 1;
+    	
+    	if(itemsHelper.hasProducto(ui.item.value)){
+    		itemsHelper.incrementarCantidad(ui.item.value, ui.item.precio);
+    		return false;
+    	}
+    	
+      	//if(!document.getElementById("total_importe_"+ui.item.value)){
+      	//	$("#cargarItemsProductos tbody").append(linea);
+      	//}else {
+      	//	cantidad = document.getElementById("cantidad_"+ui.item.value).value++;
+      	//	cantidad++;
+      	//}
+      	$("#cargarItemsProductos").removeClass("d-none");
+      	$("#cargarItemsProductos tbody").append(linea);
+      	
+      	itemsHelper.calcularImporte(ui.item.value,ui.item.precio, 1); //1 por defecto
       	return false; 
       }
     });
   } );
+  
+  var itemsHelper = {
+  
+  	calcularImporte : function(id, precio, cantidad) {
+  		$("#total_importe_"+id).html(parseFloat(precio*cantidad).toFixed(2));
+  	},
+  	hasProducto : function(id) {
+  		let resultado = false;
+  		$('input[name="item_id[]"]').each(function(){
+  			if(parseInt(id) == parseInt($(this).val())) {
+  				resultado = true;
+  			}
+  		})
+  		
+  		return resultado;
+  	},
+  	incrementarCantidad : function(id,precio) {
+  		var cantidad = document.getElementById("cantidad_"+id) !== null ? document.getElementById("cantidad_"+id).value++ : 0;
+  		cantidad++;
+  		this.calcularImporte(id,precio,cantidad);
+  	},
+  	eliminarLineaFactura : function(id) {
+  		document.getElementById("row_"+id).remove();
+  		if(document.querySelectorAll('input[name="item_id[]"]').length <=1){
+  			$("#cargarItemsProductos").addClass("d-none");
+  		}
+  	}
+  }
 	
 	</script>
 </body>
